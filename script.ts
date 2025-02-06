@@ -19,7 +19,7 @@ var passwordCurrent = `123456`;
 passwordInput.addEventListener("input",() => {
     const password : string = passwordInput.value;
     if(password.length < 6){
-        errorMessage.textContent = "密碼長度至少為6個字元";
+        errorMessage.textContent = "密碼長度至少為6個字";
         submitBtn.disabled = true;
     }
     else{
