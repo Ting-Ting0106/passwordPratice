@@ -15,6 +15,7 @@ var enter_count = 0;
 var enter_limit = 5;
 var enter_remaining = enter_limit;
 var passwordCurrent = `123456`;
+const lockTime:number = 10*1000;
 
 passwordInput.addEventListener("input",() => {
     const password : string = passwordInput.value;
@@ -30,26 +31,38 @@ passwordInput.addEventListener("input",() => {
         }
         else{
             submitBtnLimit = false;
-        }
-        
+        } 
     }
-
 });
 
 submitBtn.addEventListener("click",() => {
     enter_count++
-    enter_remaining--
     if(submitBtnLimit){
         alert("登入成功");
+        enter_count = 0;
     }
     else{
-        alert(`登入失敗，驗證次數剩餘 ${enter_remaining}`);
+        alert(`登入失敗，驗證次數剩餘 ${enter_remaining-enter_count}`);
     }
 
-    if(enter_remaining === 0){
-        submitBtn.disabled = true;
+    if(enter_count >= enter_limit){
+        lockInput();
     }
 })
+
+function lockInput(){
+    submitBtn.disabled = true;
+    passwordInput.disabled = true;
+    errorMessage.textContent =`嘗試次數過多，請過10秒再試!`;
+
+    setTimeout(() => {
+        enter_count = 0;
+        submitBtn.disabled = false;
+        passwordInput.disabled = false;
+        errorMessage.textContent =``;
+    },lockTime)
+
+}
 
 //export{};
 
