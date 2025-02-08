@@ -12,7 +12,7 @@ var enter_count = 0;
 var enter_limit = 5;
 var enter_remaining = enter_limit;
 var passwordCurrent = "123456";
-var lockTime = 10 * 1000;
+var lockTime = 10;
 passwordInput.addEventListener("input", function () {
     var password = passwordInput.value;
     if (password.length < 6) {
@@ -22,37 +22,43 @@ passwordInput.addEventListener("input", function () {
     else {
         errorMessage.textContent = "";
         submitBtn.disabled = false;
-        if (password === passwordCurrent) {
-            submitBtnLimit = true;
-        }
-        else {
-            submitBtnLimit = false;
-        }
     }
 });
 submitBtn.addEventListener("click", function () {
-    enter_count++;
-    if (submitBtnLimit) {
+    var password = passwordInput.value;
+    if (password === passwordCurrent) {
         alert("登入成功");
         enter_count = 0;
+        localStorage.setItem("authenticated", "true");
+        window.location.href = "home.html";
     }
     else {
+        enter_count++;
         alert("\u767B\u5165\u5931\u6557\uFF0C\u9A57\u8B49\u6B21\u6578\u5269\u9918 ".concat(enter_remaining - enter_count));
-    }
-    if (enter_count >= enter_limit) {
-        lockInput();
+        if (enter_count >= enter_limit) {
+            lockInput();
+        }
     }
 });
 function lockInput() {
     submitBtn.disabled = true;
     passwordInput.disabled = true;
-    errorMessage.textContent = "\u5617\u8A66\u6B21\u6578\u904E\u591A\uFF0C\u8ACB\u904E10\u79D2\u518D\u8A66!";
-    setTimeout(function () {
-        enter_count = 0;
-        submitBtn.disabled = false;
-        passwordInput.disabled = false;
-        errorMessage.textContent = "";
-    }, lockTime);
+    var countdown = lockTime;
+    errorMessage.textContent = "\u5617\u8A66\u6B21\u6578\u904E\u591A\uFF0C\u8ACB\u904E".concat(countdown, "\u79D2\u518D\u8A66!");
+    var timer = setInterval(function () {
+        countdown--;
+        errorMessage.textContent = "\u5617\u8A66\u6B21\u6578\u904E\u591A\uFF0C\u8ACB\u904E".concat(countdown, "\u79D2\u518D\u8A66!");
+        if (countdown <= 0) {
+            clearInterval(timer);
+            unlockInput();
+        }
+    }, 1000);
+}
+function unlockInput() {
+    enter_count = 0;
+    passwordInput.disabled = false;
+    submitBtn.disabled = false;
+    errorMessage.textContent = "";
 }
 //export{};
 // while(password != input && !out_limit){

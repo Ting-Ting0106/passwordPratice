@@ -1,0 +1,14 @@
+body{
+    font-family: Arial,sans-serlf;
+    text-align: center;
+    margin: 50px;
+}
+.input-container{
+    position: relative;
+    display: inline-block;
+}
+.error{
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}

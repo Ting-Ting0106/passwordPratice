@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+    <meta charest="UTH-8" />
+    <title>已登入的頁面</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+    <body>
+        <h2>歡迎來到卡加布列島</h2>
+        <button id="logout-btn">登出</button>
+    </body>
+
+    <script>
+        var logout = document.getElementById("logout-btn");
+        logout.addEventListener("click",() => {
+            localStorage.removeItem("authenticated");
+            window.location.href = "index.html";
+            console.log("按了登出鈕");
+        });
+
+        if(!localStorage.getItem("authenticated")){
+            window.location.href = "index.html";
+        }
+
+    </script>

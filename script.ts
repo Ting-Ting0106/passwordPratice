@@ -10,12 +10,13 @@
 const passwordInput = document.getElementById("password") as HTMLInputElement;
 const errorMessage = document.getElementById("error-message") as HTMLParagraphElement;
 const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+
 var submitBtnLimit = false;
 var enter_count = 0;
 var enter_limit = 5;
 var enter_remaining = enter_limit;
 var passwordCurrent = `123456`;
-const lockTime:number = 10*1000;
+const lockTime:number = 10;
 
 passwordInput.addEventListener("input",() => {
     const password : string = passwordInput.value;
@@ -26,43 +27,54 @@ passwordInput.addEventListener("input",() => {
     else{
         errorMessage.textContent = "";
         submitBtn.disabled = false;
-        if(password === passwordCurrent){
-            submitBtnLimit = true;
-        }
-        else{
-            submitBtnLimit = false;
-        } 
     }
 });
 
 submitBtn.addEventListener("click",() => {
-    enter_count++
-    if(submitBtnLimit){
+    const password : string = passwordInput.value;
+    if(password === passwordCurrent){
         alert("登入成功");
         enter_count = 0;
+        localStorage.setItem("authenticated","true");
+        window.location.href = "home.html";
     }
     else{
+        enter_count++;
         alert(`登入失敗，驗證次數剩餘 ${enter_remaining-enter_count}`);
+    
+        if(enter_count >= enter_limit){
+            lockInput();
+        }
     }
 
-    if(enter_count >= enter_limit){
-        lockInput();
-    }
+
 })
 
 function lockInput(){
     submitBtn.disabled = true;
     passwordInput.disabled = true;
-    errorMessage.textContent =`嘗試次數過多，請過10秒再試!`;
 
-    setTimeout(() => {
-        enter_count = 0;
-        submitBtn.disabled = false;
-        passwordInput.disabled = false;
-        errorMessage.textContent =``;
-    },lockTime)
+    let countdown = lockTime;
+    errorMessage.textContent =`嘗試次數過多，請過${countdown}秒再試!`;
 
+    const timer = setInterval(() => {
+        countdown--;
+        errorMessage.textContent =`嘗試次數過多，請過${countdown}秒再試!`;
+
+        if(countdown <= 0){
+            clearInterval(timer);
+            unlockInput();
+        }
+    },1000)
 }
+
+function unlockInput(){
+    enter_count = 0;
+    passwordInput.disabled = false;
+    submitBtn.disabled = false;
+    errorMessage.textContent = "";
+}
+
 
 //export{};
 
